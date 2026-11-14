@@ -66,7 +66,7 @@ function render() {
 
   controls.forEach((c, i) => {
     const el = document.createElement('div');
-    el.className = `ctl ${c.type}`;
+    el.className = `ctl ${c.type}${c.type === 'cc' && c.orientation === 'horizontal' ? ' horizontal' : ''}`;
     el.dataset.id = c.id;
     el.style.setProperty('--c', c.color);
 
@@ -113,7 +113,15 @@ function updateView(id) {
     el.classList.toggle('on', !!state[id]);
   } else {
     const v = state[id] ?? 0;
-    el.querySelector('.fill').style.height = `${(v / 127) * 100}%`;
+    const pct = `${(v / 127) * 100}%`;
+    const fill = el.querySelector('.fill').style;
+    if (c.orientation === 'horizontal') {
+      fill.width = pct;
+      fill.height = '';
+    } else {
+      fill.height = pct;
+      fill.width = '';
+    }
     el.querySelector('.value').textContent = v;
   }
 }
@@ -169,9 +177,11 @@ function bindNote(el, c) {
 function bindCC(el, c) {
   let active = false;
 
-  const setFromY = (clientY) => {
+  const horizontal = c.orientation === 'horizontal';
+  const setFromPointer = (e) => {
     const r = el.getBoundingClientRect();
-    const v = Math.round((1 - (clientY - r.top) / r.height) * 127);
+    const frac = horizontal ? (e.clientX - r.left) / r.width : 1 - (e.clientY - r.top) / r.height;
+    const v = Math.round(frac * 127);
     const value = Math.max(0, Math.min(127, v));
     if (value === state[c.id]) return;
     state[c.id] = value;
@@ -184,10 +194,10 @@ function bindCC(el, c) {
     e.preventDefault();
     el.setPointerCapture(e.pointerId);
     active = true;
-    setFromY(e.clientY);
+    setFromPointer(e);
   });
   el.addEventListener('pointermove', (e) => {
-    if (active) setFromY(e.clientY);
+    if (active) setFromPointer(e);
   });
   const end = () => (active = false);
   el.addEventListener('pointerup', end);
@@ -243,7 +253,7 @@ function openEditor(c) {
   $('#delete-btn').hidden = !c;
 
   const lastCh = controls.length ? controls[controls.length - 1].channel : 1;
-  const d = c || { name: '', type: 'note', channel: lastCh, number: 60, velocity: 127, mode: 'momentary', color: COLORS[controls.length % COLORS.length] };
+  const d = c || { name: '', type: 'note', channel: lastCh, number: 60, velocity: 127, mode: 'momentary', orientation: 'vertical', color: COLORS[controls.length % COLORS.length] };
 
   form.name.value = d.name;
   form.type.value = d.type;
@@ -251,6 +261,7 @@ function openEditor(c) {
   form.number.value = d.number;
   form.velocity.value = d.velocity;
   form.mode.value = d.mode;
+  form.orientation.value = d.orientation || 'vertical';
   selectColor(d.color);
   syncForm();
   dialog.showModal();
@@ -275,6 +286,7 @@ form.addEventListener('submit', () => {
       number: Number(form.number.value),
       velocity: Number(form.velocity.value),
       mode: form.mode.value,
+      orientation: form.orientation.value,
       color: selectedColor,
     },
   });

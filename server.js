@@ -88,6 +88,7 @@ function sanitizeControl(c) {
     number: clamp(c.number ?? (type === 'note' ? 60 : 1), 0, 127),
     velocity: clamp(c.velocity ?? 127, 1, 127),
     mode: c.mode === 'toggle' ? 'toggle' : 'momentary', // notes only
+    orientation: c.orientation === 'horizontal' ? 'horizontal' : 'vertical', // CC only
     color: /^#[0-9a-f]{6}$/i.test(c.color) ? c.color : '#4f8cff',
   };
 }

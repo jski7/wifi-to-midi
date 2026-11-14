@@ -109,6 +109,11 @@ header {
   opacity: .85;
   pointer-events: none;
 }
+.ctl.cc.horizontal { grid-row: span 1; grid-column: span 2; }
+.ctl.cc.horizontal .fill {
+  top: 0; right: auto;
+  background: linear-gradient(to right, color-mix(in srgb, var(--c) 55%, transparent), var(--c));
+}
 .ctl.cc .value {
   position: absolute; top: 10px; left: 0; right: 0;
   text-align: center; font-size: 28px; font-weight: 700;
@@ -166,6 +171,7 @@ output { color: var(--text); }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .note-only { display: flex; flex-direction: column; gap: 14px; }
 form.is-cc .note-only { display: none; }
+form:not(.is-cc) .cc-only { display: none; }
 
 fieldset { border: 0; padding: 0; margin: 0; }
 legend { font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 6px; padding: 0; }

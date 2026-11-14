@@ -12,7 +12,8 @@ In the web page you build your own control surface:
   - *Hold*: note on while you press, note off when you let go.
   - *Toggle*: tap once for note on, tap again for note off.
   - Velocity can be set for each pad.
-- **CC level**: a fader that sends values 0–127 for a chosen CC number and channel.
+- **CC level**: a fader that sends values 0–127 for a chosen CC number and channel,
+  shown vertically or horizontally.
 
 Controls are saved in `controls.json` and stay in sync across every connected device.
 
