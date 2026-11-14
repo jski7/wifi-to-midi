@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#111318">
+  <title>WiFi MIDI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="title">
+      <span id="status" class="dot" title="Disconnected"></span>
+      <span id="device">WiFi MIDI</span>
+      <span id="mode-badge" class="badge" hidden>log only</span>
+    </div>
+    <div class="actions">
+      <button id="add-btn" class="btn primary" hidden>+ Add</button>
+      <button id="edit-btn" class="btn">Edit</button>
+    </div>
+  </header>
+
+  <main id="grid"></main>
+
+  <div id="empty" class="empty" hidden>
+    <p>No controls yet.</p>
+    <button id="empty-add" class="btn primary">+ Add your first control</button>
+  </div>
+
+  <dialog id="editor">
+    <form method="dialog" id="editor-form">
+      <h2 id="editor-title">Add control</h2>
+
+      <label>Name
+        <input name="name" maxlength="40" placeholder="e.g. Kick, Filter cutoff" autocomplete="off">
+      </label>
+
+      <fieldset class="seg">
+        <legend>Type</legend>
+        <label><input type="radio" name="type" value="note" checked><span>Note trigger</span></label>
+        <label><input type="radio" name="type" value="cc"><span>CC level</span></label>
+      </fieldset>
+
+      <div class="row">
+        <label>Channel
+          <select name="channel"></select>
+        </label>
+        <label><span id="number-label">Note</span>
+          <input name="number" type="number" min="0" max="127" value="60" inputmode="numeric" required>
+          <small id="number-hint"></small>
+        </label>
+      </div>
+
+      <div class="note-only">
+        <label>Velocity <output id="vel-out">127</output>
+          <input name="velocity" type="range" min="1" max="127" value="127">
+        </label>
+        <fieldset class="seg">
+          <legend>Behaviour</legend>
+          <label><input type="radio" name="mode" value="momentary" checked><span>Hold (on while pressed)</span></label>
+          <label><input type="radio" name="mode" value="toggle"><span>Toggle (tap on / tap off)</span></label>
+        </fieldset>
+      </div>
+
+      <fieldset>
+        <legend>Colour</legend>
+        <div id="swatches" class="swatches"></div>
+      </fieldset>
+
+      <div class="dialog-actions">
+        <button type="button" id="delete-btn" class="btn danger">Delete</button>
+        <span class="spacer"></span>
+        <button type="button" id="cancel-btn" class="btn">Cancel</button>
+        <button type="submit" class="btn primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

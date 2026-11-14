@@ -1,0 +1,20 @@
+{
+  "name": "wifi-to-midi",
+  "version": "1.0.0",
+  "description": "Creates a virtual MIDI device on macOS and serves a web app to control it over WiFi.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "optionalDependencies": {
+    "@julusian/midi": "^3.6.1"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,190 @@
+:root {
+  --bg: #111318;
+  --panel: #1b1e26;
+  --panel-2: #252935;
+  --text: #e9ecf2;
+  --muted: #8a91a3;
+  --accent: #4f8cff;
+  --danger: #ff5a5f;
+  --radius: 14px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior: none;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
+  background: rgba(17, 19, 24, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #ffffff10;
+}
+
+.title { display: flex; align-items: center; gap: 8px; font-weight: 600; min-width: 0; }
+.title #device { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.actions { display: flex; gap: 8px; }
+
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); flex: none; }
+.dot.on { background: #3ad07a; box-shadow: 0 0 8px #3ad07a; }
+
+.badge {
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+  padding: 2px 6px; border-radius: 6px; background: #ffb02033; color: #ffc457;
+}
+
+.btn {
+  appearance: none; border: 0; cursor: pointer;
+  padding: 8px 14px; border-radius: 10px;
+  background: var(--panel-2); color: var(--text);
+  font: inherit; font-weight: 600;
+}
+.btn.primary { background: var(--accent); color: #fff; }
+.btn.danger { background: transparent; color: var(--danger); }
+.btn.active { background: #ffffff; color: #111; }
+
+/* ------------------------------------------------------------ grid -- */
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-auto-rows: 140px;
+  grid-auto-flow: dense;
+  gap: 12px;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+}
+
+.ctl {
+  --c: var(--accent);
+  position: relative;
+  border-radius: var(--radius);
+  background: var(--panel);
+  border: 2px solid color-mix(in srgb, var(--c) 45%, transparent);
+  overflow: hidden;
+  touch-action: none;
+  cursor: pointer;
+}
+
+.ctl .label {
+  position: absolute; inset: auto 10px 10px 10px;
+  pointer-events: none;
+  z-index: 2;
+}
+.ctl .name { font-weight: 700; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ctl .meta { color: var(--muted); font-size: 12px; }
+
+/* note pads */
+.ctl.note { transition: background 60ms, transform 60ms; }
+.ctl.note.on {
+  background: var(--c);
+  transform: scale(0.97);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--c) 60%, transparent);
+}
+.ctl.note.on .meta { color: #ffffffcc; }
+.ctl.note .mode-icon {
+  position: absolute; top: 8px; right: 10px; font-size: 12px; color: var(--muted);
+}
+
+/* CC faders */
+.ctl.cc { grid-row: span 2; }
+.ctl.cc .fill {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to top, var(--c), color-mix(in srgb, var(--c) 55%, transparent));
+  opacity: .85;
+  pointer-events: none;
+}
+.ctl.cc .value {
+  position: absolute; top: 10px; left: 0; right: 0;
+  text-align: center; font-size: 28px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none; z-index: 2;
+  text-shadow: 0 1px 4px #0008;
+}
+.ctl.cc .label { text-shadow: 0 1px 4px #0008; }
+.ctl.cc .label .meta { color: #ffffffbb; }
+
+/* edit mode */
+body.editing .ctl { animation: wiggle .3s ease-in-out infinite alternate; border-style: dashed; }
+body.editing .ctl:nth-child(2n) { animation-delay: -.15s; }
+@keyframes wiggle { from { rotate: -0.6deg; } to { rotate: 0.6deg; } }
+.ctl .move {
+  position: absolute; top: 6px; z-index: 3;
+  display: none;
+  width: 32px; height: 32px; border-radius: 8px; border: 0;
+  background: #000a; color: #fff; font-size: 16px;
+}
+.ctl .move.left { left: 6px; }
+.ctl .move.right { right: 6px; }
+body.editing .ctl .move { display: block; }
+body.editing .ctl .mode-icon { display: none; }
+
+.empty { text-align: center; color: var(--muted); padding: 60px 16px; }
+
+/* ---------------------------------------------------------- dialog -- */
+
+dialog {
+  width: min(460px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: 1px solid #ffffff18;
+  border-radius: 18px;
+  background: var(--panel);
+  color: var(--text);
+  -webkit-user-select: text;
+  user-select: text;
+}
+dialog::backdrop { background: #000a; }
+dialog form { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+dialog h2 { margin: 0; font-size: 18px; }
+
+label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); font-weight: 600; }
+input[type=text], input:not([type]), input[type=number], select {
+  font: inherit; font-size: 16px; color: var(--text);
+  background: var(--bg); border: 1px solid #ffffff1c; border-radius: 10px;
+  padding: 10px 12px; width: 100%;
+}
+input[type=range] { width: 100%; accent-color: var(--accent); }
+small { color: var(--muted); font-weight: 400; min-height: 1.2em; }
+output { color: var(--text); }
+
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.note-only { display: flex; flex-direction: column; gap: 14px; }
+form.is-cc .note-only { display: none; }
+
+fieldset { border: 0; padding: 0; margin: 0; }
+legend { font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 6px; padding: 0; }
+
+.seg { display: flex; gap: 6px; flex-wrap: wrap; }
+.seg legend { width: 100%; }
+.seg label { flex: 1; min-width: 120px; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span {
+  display: block; text-align: center; padding: 10px; border-radius: 10px;
+  background: var(--bg); border: 1px solid #ffffff1c; color: var(--text); cursor: pointer;
+}
+.seg input:checked + span { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+.swatches button {
+  width: 34px; height: 34px; border-radius: 50%; border: 3px solid transparent; cursor: pointer;
+}
+.swatches button.sel { border-color: #fff; }
+
+.dialog-actions { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+.spacer { flex: 1; }
