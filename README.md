@@ -17,22 +17,58 @@ In the web page you build your own control surface:
 
 Controls are saved in `controls.json` and stay in sync across every connected device.
 
-## Requirements
+## Install and run
 
-- macOS (Apple Silicon or Intel)
-- [Node.js](https://nodejs.org) 18 or newer (`brew install node`)
+The code is on the `claude/magical-cannon-v41b23` branch until it is merged into `main`.
 
-## Run it
+### macOS
 
 ```bash
-git clone https://github.com/jski7/wifi-to-midi.git
+# 1. Homebrew (skip if you have it)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# 2. Node.js and git
+brew install node git
+# 3. Get the app and its dependencies
+git clone -b claude/magical-cannon-v41b23 https://github.com/jski7/wifi-to-midi.git
+cd wifi-to-midi
+npm install
+# 4. Start
+npm start
+```
+
+Next time, double-click **`start.command`** in Finder (right-click → **Open** the first time
+if macOS blocks it). When macOS asks whether Node may accept incoming network connections,
+click **Allow**.
+
+### Windows
+
+Windows cannot create virtual MIDI devices, so install the free
+[loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html), open it, type
+`WiFi MIDI` as the port name and click **+**. Keep loopMIDI running. Then in PowerShell:
+
+```powershell
+winget install OpenJS.NodeJS.LTS Git.Git
+# close and reopen PowerShell so node and git are found
+git clone -b claude/magical-cannon-v41b23 https://github.com/jski7/wifi-to-midi.git
 cd wifi-to-midi
 npm install
 npm start
 ```
 
-Or double-click **`start.command`** in Finder. It installs the dependencies on first run.
-If macOS blocks it, right-click it and choose **Open** once.
+Next time, double-click **`start.bat`**. Allow Node through Windows Firewall on
+**private networks** when asked. In your DAW, choose **WiFi MIDI** (the loopMIDI port) as input.
+
+### Linux
+
+```bash
+sudo apt install nodejs npm git     # Node 18+ required
+git clone -b claude/magical-cannon-v41b23 https://github.com/jski7/wifi-to-midi.git
+cd wifi-to-midi && npm install && npm start
+```
+
+A virtual ALSA MIDI port named "WiFi MIDI" is created.
+
+### Open the controller
 
 The terminal prints the addresses to open, for example:
 
@@ -40,13 +76,10 @@ The terminal prints the addresses to open, for example:
 🎹 Virtual MIDI device "WiFi MIDI" created.
 📡 WiFi to MIDI is running. Open on your phone (same WiFi):
    http://192.168.1.23:8080
-   http://my-macbook.local:8080
 ```
 
 Open one of those URLs on your phone. On iPhone you can tap **Share → Add to Home Screen** to
 get a full-screen app.
-
-> When macOS asks whether Node may accept incoming network connections, click **Allow**.
 
 ## Using it
 

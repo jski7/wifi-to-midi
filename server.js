@@ -24,8 +24,26 @@ function createMidiOut() {
   try {
     const midi = require('@julusian/midi');
     const out = new midi.Output();
-    out.openVirtualPort(DEVICE_NAME);
-    console.log(`🎹 Virtual MIDI device "${DEVICE_NAME}" created.`);
+    if (process.platform === 'win32') {
+      // Windows cannot create virtual MIDI ports. Connect to a loopback port
+      // made with loopMIDI (https://www.tobias-erichsen.de/software/loopmidi.html)
+      // named like MIDI_NAME, or any loopMIDI port.
+      const names = Array.from({ length: out.getPortCount() }, (_, i) => out.getPortName(i));
+      const want = DEVICE_NAME.toLowerCase();
+      let idx = names.findIndex((n) => n.toLowerCase().includes(want));
+      if (idx < 0) idx = names.findIndex((n) => n.toLowerCase().includes('loopmidi'));
+      if (idx < 0) {
+        throw new Error(
+          `no loopMIDI port found. Install loopMIDI and add a port named "${DEVICE_NAME}". ` +
+            `Available outputs: ${names.join(', ') || 'none'}`
+        );
+      }
+      out.openPort(idx);
+      console.log(`🎹 Sending to MIDI port "${names[idx]}".`);
+    } else {
+      out.openVirtualPort(DEVICE_NAME);
+      console.log(`🎹 Virtual MIDI device "${DEVICE_NAME}" created.`);
+    }
     return {
       live: true,
       send: (bytes) => out.sendMessage(bytes),
